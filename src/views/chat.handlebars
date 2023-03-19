@@ -1,0 +1,54 @@
+<div>
+    <div class="chat">
+        <h2>Chat</h2>
+       <div >
+        <p id="mensajes"></p>
+       </div>
+    </div>
+    <div >
+        <form id="form" >
+  <label for="user">Email:</label><br>
+  <input type="text" id="user" name="user"><br>
+  <label for="message">Mensaje:</label><br>
+  <input type="text" id="message" name="message" ><br><br>
+  <input type="submit" value="Submit">
+</form> 
+   
+</div>
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+<script>
+    const socket = io();
+
+    const chat = document.getElementById('mensajes')
+    const renderMsj = (msj) => {
+      let mensajes= "";
+      Array.from(msj).forEach((m)=>{
+        mensajes +=  `<b> id </b> ${m.user} <b> dice:  </b>: ${m.message}<br/>`
+      })
+      chat.innerHTML = mensajes;
+      console.log("🚀 ~ file: chat.handlebars:29 ~ renderMsj ~ mensajes:", mensajes)
+    };
+
+/// evento de mensaje
+const userE = document.getElementById('user')
+
+const mensajeE = document.getElementById('message');
+
+const form = document.getElementById('form');
+
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  let user = userE.value
+  let message = mensajeE.value
+  socket.emit('nuevo msj', {user , message})
+  mensajeE.value = ""
+});
+
+socket.on('mensajes', (mensajes) => {
+ 
+     renderMsj(mensajes)
+	});
+
+    
+
+</script>
